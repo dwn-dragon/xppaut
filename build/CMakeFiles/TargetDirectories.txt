@@ -1,3 +1,0 @@
-/home/admin/dev/cpp/xppaut/build/CMakeFiles/xppaut.dir
-/home/admin/dev/cpp/xppaut/build/CMakeFiles/edit_cache.dir
-/home/admin/dev/cpp/xppaut/build/CMakeFiles/rebuild_cache.dir
