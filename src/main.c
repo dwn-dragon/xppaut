@@ -121,7 +121,7 @@ extern int RunImmediately;
 int Xup,TipsFlag=1;
 Atom deleteWindowAtom=0;
 int XPPBatch=0,batch_range=0;
-char batchout[256];
+char batchout[256] = "output.dat";
 char UserOUTFILE[256];
 XKeyEvent createKeyEvent(Window w,Window wr,int p,int kc,int m);
 void scripty();
@@ -130,7 +130,7 @@ int my_rhs();
  int DisplayHeight,DisplayWidth;
 int TrueColorFlag;
 char big_font_name[100],small_font_name[100];
-char PlotFormat[100];
+char PlotFormat[100] = "ps";
 
 int PaperWhite=-1;
 extern int DF_FLAG;
@@ -203,357 +203,314 @@ XFontStruct *big_font,*small_font;
 int popped=0;
 
 int main(int argc, char* argv[]) {
-/* Moved to init_X() */
-/*  char *icon_name="xpp"; */
-  /*char myfile[256];*/
-  char myfile[XPP_MAX_NAME];
-/*  char *win_name; */
-  char pptitle[80];
+	char myfile[XPP_MAX_NAME];
+	char pptitle[80];
   
-  /*Track which options have not been set already*/
-  notAlreadySet.BIG_FONT_NAME=1;
-  notAlreadySet.SMALL_FONT_NAME=1;
-  notAlreadySet.BACKGROUND=1;
-  notAlreadySet.IXPLT=1;
-  notAlreadySet.IYPLT=1;
-  notAlreadySet.IZPLT=1;
-  notAlreadySet.AXES=1;
-  notAlreadySet.NMESH=1;
-  notAlreadySet.METHOD=1;
-  notAlreadySet.TIMEPLOT=1;
-  notAlreadySet.MAXSTOR=1;
-  notAlreadySet.TEND=1;
-  notAlreadySet.DT=1;
-  notAlreadySet.T0=1;
-  notAlreadySet.TRANS=1;
-  notAlreadySet.BOUND=1;
-  notAlreadySet.TOLER=1;
-  notAlreadySet.DELAY=1;
-  notAlreadySet.XLO=1;
-  notAlreadySet.XHI=1;
-  notAlreadySet.YLO=1;
-  notAlreadySet.YHI=1;  
-  notAlreadySet.UserBlack=1;
-  notAlreadySet.UserWhite=1;
-  notAlreadySet.UserMainWinColor=1;
-  notAlreadySet.UserDrawWinColor=1;
-  notAlreadySet.UserGradients=1;
-  notAlreadySet.UserBGBitmap=1;
-  notAlreadySet.UserMinWidth=1;
-  notAlreadySet.UserMinHeight=1;
-  notAlreadySet.YNullColor=1;
-  notAlreadySet.XNullColor=1;
-  notAlreadySet.StableManifoldColor=1;
-  notAlreadySet.UnstableManifoldColor=1;
-  notAlreadySet.START_LINE_TYPE=1;
-  notAlreadySet.RandSeed=1;
-  notAlreadySet.PaperWhite=1;
-  notAlreadySet.COLORMAP=1;
-  notAlreadySet.NPLOT=1;
-  notAlreadySet.DLL_LIB=1;
-  notAlreadySet.DLL_FUN=1;
-  notAlreadySet.XP=1;
-  notAlreadySet.YP=1;
-  notAlreadySet.ZP=1;
-  notAlreadySet.NOUT=1;
-  notAlreadySet.VMAXPTS=1;
-  notAlreadySet.TOR_PER=1;
-  notAlreadySet.JAC_EPS=1;
-  notAlreadySet.NEWT_TOL=1;
-  notAlreadySet.NEWT_ITER=1;
-  notAlreadySet.FOLD=1;
-  notAlreadySet.DTMIN=1;
-  notAlreadySet.DTMAX=1;
-  notAlreadySet.ATOL=1;
-  notAlreadySet.TOL=1;
-  notAlreadySet.BANDUP=1;
-  notAlreadySet.BANDLO=1;
-  notAlreadySet.PHI=1;
-  notAlreadySet.THETA=1;
-  notAlreadySet.XMIN=1;
-  notAlreadySet.XMAX=1;
-  notAlreadySet.YMIN=1;
-  notAlreadySet.YMAX=1;
-  notAlreadySet.ZMIN=1;
-  notAlreadySet.ZMAX=1;
-  notAlreadySet.POIVAR=1;
-  notAlreadySet.OUTPUT=1;
-  notAlreadySet.POISGN=1;
-  notAlreadySet.POISTOP=1;
-  notAlreadySet.STOCH=1;
-  notAlreadySet.POIPLN=1;
-  notAlreadySet.POIMAP=1;
-  notAlreadySet.RANGEOVER=1;
-  notAlreadySet.RANGESTEP=1;
-  notAlreadySet.RANGELOW=1;
-  notAlreadySet.RANGEHIGH=1;
-  notAlreadySet.RANGERESET=1;
-  notAlreadySet.RANGEOLDIC=1;
-  notAlreadySet.RANGE=1;
-  notAlreadySet.NTST=1;
-  notAlreadySet.NMAX=1;
-  notAlreadySet.NPR=1;
-  notAlreadySet.NCOL=1;
-  notAlreadySet.DSMIN=1;
-  notAlreadySet.DSMAX=1;
-  notAlreadySet.DS=1;
-  notAlreadySet.PARMAX=1;
-  notAlreadySet.NORMMIN=1;
-  notAlreadySet.NORMMAX=1;
-  notAlreadySet.EPSL=1;
-  notAlreadySet.EPSU=1;
-  notAlreadySet.EPSS=1;
-  notAlreadySet.RUNNOW=1;
-  notAlreadySet.SEC=1;
-  notAlreadySet.UEC=1;
-  notAlreadySet.SPC=1;
-  notAlreadySet.UPC=1;
-  notAlreadySet.AUTOEVAL=1;
-  notAlreadySet.AUTOXMAX=1;
-  notAlreadySet.AUTOYMAX=1;
-  notAlreadySet.AUTOXMIN=1;
-  notAlreadySet.AUTOYMIN=1;
-  notAlreadySet.AUTOVAR=1;
-  notAlreadySet.PS_FONT=1;
-  notAlreadySet.PS_LW=1;   
-  notAlreadySet.PS_FSIZE=1;
-  notAlreadySet.PS_COLOR=1;
-  notAlreadySet.FOREVER=1;
-  notAlreadySet.BVP_TOL=1;
-  notAlreadySet.BVP_EPS=1;
-  notAlreadySet.BVP_MAXIT=1;
-  notAlreadySet.BVP_FLAG=1;
-  notAlreadySet.SOS=1;
-  notAlreadySet.FFT=1;
-  notAlreadySet.HIST=1;
-  notAlreadySet.PltFmtFlag=1;
-  notAlreadySet.ATOLER=1;
-  notAlreadySet.MaxEulIter=1;
-  notAlreadySet.EulTol=1;
-  notAlreadySet.EVEC_ITER=1;
-  notAlreadySet.EVEC_ERR=1;
-  notAlreadySet.NULL_ERR=1;
-  notAlreadySet.NEWT_ERR=1;
-  notAlreadySet.NULL_HERE=1;
-  notAlreadySet.TUTORIAL=1;
-  notAlreadySet.SLIDER1=1;
-  notAlreadySet.SLIDER2=1;
-  notAlreadySet.SLIDER3=1;
-  notAlreadySet.SLIDER1LO=1;
-  notAlreadySet.SLIDER2LO=1;
-  notAlreadySet.SLIDER3LO=1;
-  notAlreadySet.SLIDER1HI=1;
-  notAlreadySet.SLIDER2HI=1;
-  notAlreadySet.SLIDER3HI=1;
-  notAlreadySet.POSTPROCESS=1;
-  notAlreadySet.HISTCOL=1;
-  notAlreadySet.HISTLO=1;
-  notAlreadySet.HISTHI=1;
-  notAlreadySet.HISTBINS=1;
-  notAlreadySet.SPECCOL=1;
-  notAlreadySet.SPECCOL2=1;
-  notAlreadySet.SPECWIDTH=1;
-  notAlreadySet.SPECWIN=1;
-  notAlreadySet.PLOTFORMAT=1;
-  notAlreadySet.DFGRID=1;
-  notAlreadySet.DFBATCH=1;
-  notAlreadySet.NCBATCH=1;
-  notAlreadySet.COLORVIA=1;
-  notAlreadySet.COLORIZE=1;
-    notAlreadySet.COLORHI=1;
-  notAlreadySet.COLORLO=1;
+	//	tracks which options have not been set already*/
+  	notAlreadySet.BIG_FONT_NAME=1;
+	notAlreadySet.SMALL_FONT_NAME=1;
+	notAlreadySet.BACKGROUND=1;
+	notAlreadySet.IXPLT=1;
+	notAlreadySet.IYPLT=1;
+	notAlreadySet.IZPLT=1;
+	notAlreadySet.AXES=1;
+	notAlreadySet.NMESH=1;
+	notAlreadySet.METHOD=1;
+	notAlreadySet.TIMEPLOT=1;
+	notAlreadySet.MAXSTOR=1;
+	notAlreadySet.TEND=1;
+	notAlreadySet.DT=1;
+	notAlreadySet.T0=1;
+	notAlreadySet.TRANS=1;
+	notAlreadySet.BOUND=1;
+	notAlreadySet.TOLER=1;
+	notAlreadySet.DELAY=1;
+	notAlreadySet.XLO=1;
+	notAlreadySet.XHI=1;
+	notAlreadySet.YLO=1;
+	notAlreadySet.YHI=1;  
+	notAlreadySet.UserBlack=1;
+	notAlreadySet.UserWhite=1;
+	notAlreadySet.UserMainWinColor=1;
+	notAlreadySet.UserDrawWinColor=1;
+	notAlreadySet.UserGradients=1;
+	notAlreadySet.UserBGBitmap=1;
+	notAlreadySet.UserMinWidth=1;
+	notAlreadySet.UserMinHeight=1;
+	notAlreadySet.YNullColor=1;
+	notAlreadySet.XNullColor=1;
+	notAlreadySet.StableManifoldColor=1;
+	notAlreadySet.UnstableManifoldColor=1;
+	notAlreadySet.START_LINE_TYPE=1;
+	notAlreadySet.RandSeed=1;
+	notAlreadySet.PaperWhite=1;
+	notAlreadySet.COLORMAP=1;
+	notAlreadySet.NPLOT=1;
+	notAlreadySet.DLL_LIB=1;
+	notAlreadySet.DLL_FUN=1;
+	notAlreadySet.XP=1;
+	notAlreadySet.YP=1;
+	notAlreadySet.ZP=1;
+	notAlreadySet.NOUT=1;
+	notAlreadySet.VMAXPTS=1;
+	notAlreadySet.TOR_PER=1;
+	notAlreadySet.JAC_EPS=1;
+	notAlreadySet.NEWT_TOL=1;
+	notAlreadySet.NEWT_ITER=1;
+	notAlreadySet.FOLD=1;
+	notAlreadySet.DTMIN=1;
+	notAlreadySet.DTMAX=1;
+	notAlreadySet.ATOL=1;
+	notAlreadySet.TOL=1;
+	notAlreadySet.BANDUP=1;
+	notAlreadySet.BANDLO=1;
+	notAlreadySet.PHI=1;
+	notAlreadySet.THETA=1;
+	notAlreadySet.XMIN=1;
+	notAlreadySet.XMAX=1;
+	notAlreadySet.YMIN=1;
+	notAlreadySet.YMAX=1;
+	notAlreadySet.ZMIN=1;
+	notAlreadySet.ZMAX=1;
+	notAlreadySet.POIVAR=1;
+	notAlreadySet.OUTPUT=1;
+	notAlreadySet.POISGN=1;
+	notAlreadySet.POISTOP=1;
+	notAlreadySet.STOCH=1;
+	notAlreadySet.POIPLN=1;
+	notAlreadySet.POIMAP=1;
+	notAlreadySet.RANGEOVER=1;
+	notAlreadySet.RANGESTEP=1;
+	notAlreadySet.RANGELOW=1;
+	notAlreadySet.RANGEHIGH=1;
+	notAlreadySet.RANGERESET=1;
+	notAlreadySet.RANGEOLDIC=1;
+	notAlreadySet.RANGE=1;
+	notAlreadySet.NTST=1;
+	notAlreadySet.NMAX=1;
+	notAlreadySet.NPR=1;
+	notAlreadySet.NCOL=1;
+	notAlreadySet.DSMIN=1;
+	notAlreadySet.DSMAX=1;
+	notAlreadySet.DS=1;
+	notAlreadySet.PARMAX=1;
+	notAlreadySet.NORMMIN=1;
+	notAlreadySet.NORMMAX=1;
+	notAlreadySet.EPSL=1;
+	notAlreadySet.EPSU=1;
+	notAlreadySet.EPSS=1;
+	notAlreadySet.RUNNOW=1;
+	notAlreadySet.SEC=1;
+	notAlreadySet.UEC=1;
+	notAlreadySet.SPC=1;
+	notAlreadySet.UPC=1;
+	notAlreadySet.AUTOEVAL=1;
+	notAlreadySet.AUTOXMAX=1;
+	notAlreadySet.AUTOYMAX=1;
+	notAlreadySet.AUTOXMIN=1;
+	notAlreadySet.AUTOYMIN=1;
+	notAlreadySet.AUTOVAR=1;
+	notAlreadySet.PS_FONT=1;
+	notAlreadySet.PS_LW=1;   
+	notAlreadySet.PS_FSIZE=1;
+	notAlreadySet.PS_COLOR=1;
+	notAlreadySet.FOREVER=1;
+	notAlreadySet.BVP_TOL=1;
+	notAlreadySet.BVP_EPS=1;
+	notAlreadySet.BVP_MAXIT=1;
+	notAlreadySet.BVP_FLAG=1;
+	notAlreadySet.SOS=1;
+	notAlreadySet.FFT=1;
+	notAlreadySet.HIST=1;
+	notAlreadySet.PltFmtFlag=1;
+	notAlreadySet.ATOLER=1;
+	notAlreadySet.MaxEulIter=1;
+	notAlreadySet.EulTol=1;
+	notAlreadySet.EVEC_ITER=1;
+	notAlreadySet.EVEC_ERR=1;
+	notAlreadySet.NULL_ERR=1;
+	notAlreadySet.NEWT_ERR=1;
+	notAlreadySet.NULL_HERE=1;
+	notAlreadySet.TUTORIAL=1;
+	notAlreadySet.SLIDER1=1;
+	notAlreadySet.SLIDER2=1;
+	notAlreadySet.SLIDER3=1;
+	notAlreadySet.SLIDER1LO=1;
+	notAlreadySet.SLIDER2LO=1;
+	notAlreadySet.SLIDER3LO=1;
+	notAlreadySet.SLIDER1HI=1;
+	notAlreadySet.SLIDER2HI=1;
+	notAlreadySet.SLIDER3HI=1;
+	notAlreadySet.POSTPROCESS=1;
+	notAlreadySet.HISTCOL=1;
+	notAlreadySet.HISTLO=1;
+	notAlreadySet.HISTHI=1;
+	notAlreadySet.HISTBINS=1;
+	notAlreadySet.SPECCOL=1;
+	notAlreadySet.SPECCOL2=1;
+	notAlreadySet.SPECWIDTH=1;
+	notAlreadySet.SPECWIN=1;
+	notAlreadySet.PLOTFORMAT=1;
+	notAlreadySet.DFGRID=1;
+	notAlreadySet.DFBATCH=1;
+	notAlreadySet.NCBATCH=1;
+	notAlreadySet.COLORVIA=1;
+	notAlreadySet.COLORIZE=1;
+	notAlreadySet.COLORHI=1;
+	notAlreadySet.COLORLO=1;
 
-  unsigned int min_wid=450,min_hgt=360;
+	unsigned int min_wid = 450, min_hgt = 360;
   
-/*  unsigned int x=0,y=0; */
-  /*
-  sprintf(myfile,"lecar.ode");
-  */
-  get_directory(myfile);
-  
-  SCALEX=640;
-  SCALEY=480;
-  
-  Xup=0;
-  sprintf(batchout,"output.dat");
-  sprintf(PlotFormat,"ps");
+	//	fetches current directory
+	get_directory(myfile);
+	
+	SCALEX=640;
+	SCALEY=480;
+	Xup=0;
   
 
-  /*Read visualization environement variables here
-  since some may be overridden by command line
-  */
-  logfile=stdout;
-  check_for_quiet(argc, argv);
-  /*do_vis_env();*/
+	/*Read visualization environement variables here
+	since some may be overridden by command line
+	*/
+	logfile=stdout;
+	check_for_quiet(argc, argv);
   
-  
-   /* Old code did it this way...
-   do_vis_env();
-  do_comline(argc, argv);
-   if(!XPPBatch)
-   {
-    	init_X();
-   }
-   
-  load_eqn(); 
-  */
-  
-  do_comline(argc, argv);
+	do_comline(argc, argv);
 
   
 
-  /*We need to init_X here if there is no file on command line
-  so that a file browser can be opened.
-  */
-  if(!XPPBatch)
-  {    
-       /*Swap out the current options for a temporary place holder
-       */
-       OptionsSet *tempNS = (OptionsSet*)malloc(sizeof(OptionsSet));
-       *tempNS = notAlreadySet;
-       /*Initialize what's needed to open a browser based on 
-       the current options.
-       */
-       do_vis_env(); 
-	 set_all_vals(); 
-       init_X();
-       /*       XSynchronize(display,1); */
-       /*
-       Now swap back the options for proper precedence ordering of options.
-       */
-       notAlreadySet = *tempNS;
-       free(tempNS);
-  }
-  
+	/*We need to init_X here if there is no file on command line
+	so that a file browser can be opened.
+	*/
+	if(!XPPBatch)
+	{    
+		/*Swap out the current options for a temporary place holder
+		*/
+		OptionsSet *tempNS = (OptionsSet*)malloc(sizeof(OptionsSet));
+		*tempNS = notAlreadySet;
+		/*Initialize what's needed to open a browser based on 
+		the current options.
+		*/
+		do_vis_env(); 
+		set_all_vals(); 
+		init_X();
+		/*       XSynchronize(display,1); */
+		/*
+		Now swap back the options for proper precedence ordering of options.
+		*/
+		notAlreadySet = *tempNS;
+		free(tempNS);
+	}
+	
 
-  load_eqn();
+	load_eqn();
 
-  OptionsSet *tempNS = (OptionsSet*)malloc(sizeof(OptionsSet));
-  *tempNS = notAlreadySet;
-  set_internopts(tempNS);
-  free(tempNS);
+	OptionsSet *tempNS = (OptionsSet*)malloc(sizeof(OptionsSet));
+	*tempNS = notAlreadySet;
+	set_internopts(tempNS);
+	free(tempNS);
   
-  init_alloc_info();
-      do_vis_env();
-  set_all_vals();
-  
+	init_alloc_info();
+	do_vis_env();
+	set_all_vals();
+	
+	init_alloc_info();
+	set_init_guess();
+	update_all_ffts(); 
+	
+#ifdef AUTO 
+	init_auto_win();
+#endif
  
-  /*if(!XPPBatch)
-  {
-       init_X();
-  }*/
-  
-  init_alloc_info();
-  set_init_guess();
-  update_all_ffts(); 
- 
-  #ifdef AUTO 
-    init_auto_win();
-  #endif
-  
-  /* if(make_kernels()==0){
-    plintf("Illegal kernel -- aborting \n");
-     exit(0);
-     } */
-     
- 
- 
-  if(disc(this_file))METHOD=0;
-  xppvermaj=(float)cstringmaj;
-  xppvermin=(float)cstringmin;
-  if(strlen(this_file)<60)
-    sprintf(pptitle,"XPP Ver %g.%g >> %s",xppvermaj,xppvermin,this_file);
-  else sprintf(pptitle,"XPP Version %g.%g",xppvermaj,xppvermin);
-/*  win_name=pptitle; */
-  do_meth();
+	if(disc(this_file))METHOD=0;
+	xppvermaj=(float)cstringmaj;
+	xppvermin=(float)cstringmin;
+	if(strlen(this_file)<60)
+		sprintf(pptitle,"XPP Ver %g.%g >> %s",xppvermaj,xppvermin,this_file);
+	else sprintf(pptitle,"XPP Version %g.%g",xppvermaj,xppvermin);
+	/*  win_name=pptitle; */
+	do_meth();
   
   
-  set_delay();
-  rhs=my_rhs;
-  init_fit_info();
-  strip_saveqn();
-  create_plot_list();
-  auto_load_dll();
-  
-if(XPPBatch){
-      MakeColormap();
-    init_browser();
-    init_all_graph();
-     if_needed_load_set();
-     if_needed_load_par();
-     if_needed_load_ic();
-     if_needed_select_sets();
-     if_needed_load_ext_options();
-     set_extra_graphs();
-     set_colorization_stuff();
+	set_delay();
+	rhs=my_rhs;
+	init_fit_info();
+	strip_saveqn();
+	create_plot_list();
+	auto_load_dll();
+	
+	if(XPPBatch){
+		MakeColormap();
+		init_browser();
+		init_all_graph();
+		if_needed_load_set();
+		if_needed_load_par();
+		if_needed_load_ic();
+		if_needed_select_sets();
+		if_needed_load_ext_options();
+		set_extra_graphs();
+		set_colorization_stuff();
 
-    batch_integrate();
-    silent_nullclines();
-    silent_dfields();
-    exit(0);
-  }
+		batch_integrate();
+		silent_nullclines();
+		silent_dfields();
+		exit(0);
+	}
 
-  gtitle_text(pptitle, main_win);
-  Xup=1;
-  MakeColormap();
-
-
-XMapWindow(display,main_win);
-
-make_pops();
-
-make_top_buttons();
+	gtitle_text(pptitle, main_win);
+	Xup=1;
+	MakeColormap();
 
 
+	XMapWindow(display,main_win);
 
-initialize_box();
+	make_pops();
 
-init_browser();
- if(allwinvis==1){
-   make_new_ic_box();
-   make_new_bc_box();
-   make_new_delay_box();
-   make_new_param_box();
-   make_new_browser();
-   create_eq_list();
- }
+	make_top_buttons();
 
 
 
+	initialize_box();
 
-/* create_eq_list(); */
-/* make_my_aplot("z"); */
-Xup=1;
-ani_zero();
- set_extra_graphs();
-  set_colorization_stuff();
+	init_browser();
+	if(allwinvis==1){
+		make_new_ic_box();
+		make_new_bc_box();
+		make_new_delay_box();
+		make_new_param_box();
+		make_new_browser();
+		create_eq_list();
+	}
 
-make_scrbox_lists();
+	Xup=1;
+	ani_zero();
+	set_extra_graphs();
+	set_colorization_stuff();
 
-/*   This is for testing widgets  ---    */
+	make_scrbox_lists();
 
+	//	MAIN LOOP
+	//
 
+	test_color_info();
+	if_needed_load_set();
+	if_needed_load_par();
+	if_needed_load_ic();
+	if_needed_load_ext_options();
+	if(use_ani_file)
+	{
+		new_vcr();
+		get_ani_file(anifile);
+	}
 
-/*          MAIN LOOP             */
-test_color_info();
-  if_needed_load_set();
-  if_needed_load_par();
-  if_needed_load_ic();
-  if_needed_load_ext_options();
-if(use_ani_file)
-{
-	new_vcr();
-	get_ani_file(anifile);
-}
+	if(DoTutorial==1)
+	{
+		do_tutorial();
+	}
 
-if(DoTutorial==1)
-{
-	do_tutorial();
-}
+	default_window();
 
-default_window();
-
-do_events(min_wid,min_hgt);
+	do_events(min_wid,min_hgt);
 
 	exit(0);
 } 
