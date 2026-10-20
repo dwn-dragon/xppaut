@@ -371,8 +371,8 @@ int main(int argc, char* argv[]) {
 	//	file used by the logger
 	logfile=stdout;
 
+	//	parses the arguments
 	args_priority(argc, argv);
-  
 	do_comline(argc, argv);
 
 	/*We need to init_X here if there is no file on command line
@@ -511,41 +511,10 @@ int main(int argc, char* argv[]) {
 	exit(0);
 } 
 
-void args_priority(int argc, char* argv[]) {
-	//	allows for multiple calls of the QUIET and LOGFILE but only applies the last one
-	
-	int qi = 0, li = 0, i = 1;
-	while (i < argc) {
-		if (strcmp(argv[i], "-quiet") == 0) {
-			//	saves the next index and skips it
-			qi = ++i;
-		}
-		else if (strcmp(argv[i], "-logfile") == 0) {
-			//	saves the next index and skips it
-			li = ++i;
-		}
-
-		++i;
-	}
-
-	//	sets the options only once
-	if (qi > 0) {
-		OVERRIDE_QUIET = 1;
-		set_option("QUIET", argv[qi], 1, NULL);
-	}
-	if (li > 0) {
-		OVERRIDE_LOGFILE = 1;
-		set_option("LOGFILE", argv[li], 1, NULL);
-	}
-}
-
-
-void do_vis_env()
-{
-  set_X_vals();
-  check_for_xpprc();
-  set_internopts_xpprc_and_comline();
-  
+void do_vis_env() {
+	set_X_vals();
+	read_xpprc();
+	set_internopts_xpprc_and_comline();
 }
 
 
@@ -1735,29 +1704,32 @@ void test_color_info()
 if (colors) free((char *) colors);
 }
 
+//	ALREADY WORKED FUNCTIONS
 
-/*   this is stuff for ndrand48(), nsrand48()  
-     uncomment if you dont have it 
-     RAND_MAX is either 2^16-1 or 2^32-1
-     it is usually in stdlib.h
+void args_priority(int argc, char* argv[]) {
+	//	allows for multiple calls of the QUIET and LOGFILE but only applies the last one
+	
+	int qi = 0, li = 0, i = 1;
+	while (i < argc) {
+		if (strcmp(argv[i], "-quiet") == 0) {
+			//	saves the next index and skips it
+			qi = ++i;
+		}
+		else if (strcmp(argv[i], "-logfile") == 0) {
+			//	saves the next index and skips it
+			li = ++i;
+		}
 
-#ifdef NORAND48
-double ndrand48()
-{
-  return (double)rand()/(double)RAND_MAX;
+		++i;
+	}
+
+	//	sets the options only once
+	if (qi > 0) {
+		OVERRIDE_QUIET = 1;
+		set_option("QUIET", argv[qi], 1, NULL);
+	}
+	if (li > 0) {
+		OVERRIDE_LOGFILE = 1;
+		set_option("LOGFILE", argv[li], 1, NULL);
+	}
 }
-
-nsrand48(seed)
-int seed;
-{
-  srand(seed);
-}
-
-#endif
-
-*/
-
-
-
-
-

@@ -56,8 +56,9 @@ extern int spec_col,spec_wid,spec_win,spec_col2,post_process;
 
 int nsrand48(int seed);
 
-char *interopt[MAXOPT];
+char* interopt[MAXOPT];
 int Nopts=0;
+
 int RunImmediately=0;
 extern char dll_lib[256];
 extern char dll_fun[256];
@@ -217,6 +218,29 @@ extern double auto_xmin,auto_xmax,auto_ymin,auto_ymax;
 
  int xorfix,silent,got_file;
 
+//	loads the .xpprc file
+void read_xpprc() {
+	//	fetches the home path and composes the filepath
+	char filepath[1024] { "" };
+	sprintf(filepath, "%s/.xpprc", getenv("HOME"));
+
+	//	tries to open it
+	auto f = fopen(filepath,"r");
+	if (f == nullptr)
+		//	no user settings
+		return;
+
+	//	parses the file
+	char buff[256];	
+	while (!feof(f)) {
+		fgets(buff, 256 - 1, f);
+		if(buff[0] == '@')
+			stor_internopts(buff);
+	}
+
+	fclose(f);
+}
+
 //	default values for empty settings
 void set_X_vals() {
 	//	turns on a bell on a menu
@@ -250,162 +274,18 @@ void set_X_vals() {
 		UserGradients = 1;
 	}
 }
-
-void check_for_xpprc() {
-	FILE *fp;
-
-	char rc[256];
-	char bob[256];
-
-	sprintf(rc, "%s/.xpprc", getenv("HOME"));
-
-	fp = fopen(rc,"r");
-	if(fp==NULL){
+//	saves `s1` to `interopt`
+void stor_internopts(char* s1) {
+	if(Nopts > MAXOPT) {
+		plintf("WARNING -- to many options set %s ignored\n",s1);
 		return;
 	}
+	
+	auto opt = (char*) malloc(strlen(s1) + 1);
+	strcpy(opt, s1);
 
-	while (!feof(fp)) {
-		bob[0]='\0';
-		fgets(bob,255,fp);
-		if(bob[0]=='@')
-			stor_internopts(bob);
-	}
-
-	fclose(fp);
+	interopt[Nopts++] = opt;
 }
-
-/*Logical negate OR on options set. Result overwrites the first OptionsSet
-in the argument list.*/
-void notBothOptions(OptionsSet nasA,OptionsSet nasB)
-{
-   nasA.BIG_FONT_NAME = (nasA.BIG_FONT_NAME & nasB.BIG_FONT_NAME);
-   nasA.SMALL_FONT_NAME = (nasA.SMALL_FONT_NAME & nasB.SMALL_FONT_NAME);
-   nasA.BACKGROUND = (nasA.BACKGROUND & nasB.BACKGROUND);
-   nasA.IXPLT = (nasA.IXPLT & nasB.IXPLT);
-   nasA.IYPLT = (nasA.IYPLT & nasB.IYPLT);
-   nasA.IZPLT = (nasA.IZPLT & nasB.IZPLT);
-   nasA.AXES = (nasA.AXES & nasB.AXES);
-   nasA.NMESH = (nasA.NMESH & nasB.NMESH);
-   nasA.METHOD = (nasA.METHOD & nasB.METHOD);
-   nasA.TIMEPLOT = (nasA.TIMEPLOT & nasB.TIMEPLOT);
-   nasA.MAXSTOR = (nasA.MAXSTOR & nasB.MAXSTOR);
-   nasA.TEND = (nasA.TEND & nasB.TEND);
-   nasA.DT = (nasA.DT & nasB.DT);
-   nasA.T0 = (nasA.T0 & nasB.T0);
-   nasA.TRANS = (nasA.TRANS & nasB.TRANS);
-   nasA.BOUND = (nasA.BOUND & nasB.BOUND);
-   nasA.TOLER = (nasA.TOLER & nasB.TOLER);
-   nasA.DELAY = (nasA.DELAY & nasB.DELAY);
-   nasA.XLO = (nasA.XLO & nasB.XLO);
-   nasA.XHI = (nasA.XHI & nasB.XHI);
-   nasA.YLO = (nasA.YLO & nasB.YLO);
-   nasA.YHI = (nasA.YHI & nasB.YHI);  
-   nasA.UserBlack = (nasA.UserBlack & nasB.UserBlack);
-   nasA.UserWhite = (nasA.UserWhite & nasB.UserWhite);
-   nasA.UserMainWinColor = (nasA.UserMainWinColor & nasB.UserMainWinColor);
-   nasA.UserDrawWinColor = (nasA.UserDrawWinColor & nasB.UserDrawWinColor);
-   nasA.UserGradients = (nasA.UserGradients & nasB.UserGradients);
-   nasA.UserBGBitmap = (nasA.UserBGBitmap & nasB.UserBGBitmap);
-   nasA.UserMinWidth = (nasA.UserMinWidth & nasB.UserMinWidth);
-   nasA.UserMinHeight = (nasA.UserMinHeight & nasB.UserMinHeight);
-   nasA.YNullColor = (nasA.YNullColor & nasB.YNullColor);
-   nasA.XNullColor = (nasA.XNullColor & nasB.XNullColor);
-   nasA.StableManifoldColor = (nasA.StableManifoldColor & nasB.StableManifoldColor);
-   nasA.UnstableManifoldColor = (nasA.UnstableManifoldColor & nasB.UnstableManifoldColor);
-   nasA.START_LINE_TYPE = (nasA.START_LINE_TYPE & nasB.START_LINE_TYPE);
-   nasA.RandSeed = (nasA.RandSeed & nasB.SMALL_FONT_NAME);
-   nasA.PaperWhite = (nasA.PaperWhite & nasB.PaperWhite);
-   nasA.COLORMAP = (nasA.COLORMAP & nasB.COLORMAP);
-   nasA.NPLOT = (nasA.NPLOT & nasB.NPLOT);
-   nasA.DLL_LIB = (nasA.DLL_LIB & nasB.DLL_LIB);
-   nasA.DLL_FUN = (nasA.DLL_FUN & nasB.DLL_FUN);
-   nasA.XP = (nasA.XP & nasB.XP);
-   nasA.YP = (nasA.YP & nasB.YP);
-   nasA.ZP = (nasA.ZP & nasB.ZP);
-   nasA.NOUT = (nasA.NOUT & nasB.NOUT);
-   nasA.VMAXPTS = (nasA.VMAXPTS & nasB.VMAXPTS);
-   nasA.TOR_PER = (nasA.TOR_PER & nasB.TOR_PER);
-   nasA.JAC_EPS = (nasA.JAC_EPS & nasB.JAC_EPS);
-   nasA.NEWT_TOL = (nasA.NEWT_TOL & nasB.NEWT_TOL);
-   nasA.NEWT_ITER = (nasA.NEWT_ITER & nasB.NEWT_ITER);
-   nasA.FOLD = (nasA.FOLD & nasB.FOLD);
-   nasA.DTMIN = (nasA.DTMIN & nasB.DTMIN);
-   nasA.DTMAX = (nasA.DTMAX & nasB.DTMAX);
-   nasA.ATOL = (nasA.ATOL & nasB.ATOL);
-   nasA.TOL = (nasA.TOL & nasB.TOL);
-   nasA.BANDUP = (nasA.BANDUP & nasB.BANDUP);
-   nasA.BANDLO = (nasA.BANDLO & nasB.BANDLO);
-   nasA.PHI = (nasA.PHI & nasB.PHI);
-   nasA.THETA = (nasA.THETA & nasB.THETA);
-   nasA.XMIN = (nasA.XMIN & nasB.XMIN);
-   nasA.XMAX = (nasA.XMAX & nasB.XMAX);
-   nasA.YMIN = (nasA.YMIN & nasB.YMIN);
-   nasA.YMAX = (nasA.YMAX & nasB.YMAX);
-   nasA.ZMIN = (nasA.ZMIN & nasB.ZMIN);
-   nasA.ZMAX = (nasA.ZMAX & nasB.ZMAX);
-   nasA.POIVAR = (nasA.POIVAR & nasB.POIVAR);
-   nasA.OUTPUT = (nasA.OUTPUT & nasB.OUTPUT);
-   nasA.POISGN = (nasA.POISGN & nasB.POISGN);  
-   nasA.POIEXT = (nasA.POIEXT & nasB.POIEXT);
-   nasA.POISTOP = (nasA.POISTOP & nasB.POISTOP);
-   nasA.STOCH = (nasA.STOCH & nasB.STOCH);
-   nasA.POIPLN = (nasA.POIPLN & nasB.POIPLN);
-   nasA.POIMAP = (nasA.POIMAP & nasB.POIMAP);
-   nasA.RANGEOVER = (nasA.RANGEOVER & nasB.RANGEOVER);
-   nasA.RANGESTEP = (nasA.RANGESTEP & nasB.RANGESTEP);
-   nasA.RANGELOW = (nasA.RANGELOW & nasB.RANGELOW);
-   nasA.RANGEHIGH = (nasA.RANGEHIGH & nasB.RANGEHIGH);
-   nasA.RANGERESET = (nasA.RANGERESET & nasB.RANGERESET);
-   nasA.RANGEOLDIC = (nasA.RANGEOLDIC & nasB.RANGEOLDIC);
-   nasA.RANGE = (nasA.RANGE & nasB.RANGE);
-   nasA.NTST = (nasA.NTST & nasB.NTST);
-   nasA.NMAX = (nasA.NMAX & nasB.NMAX);
-   nasA.NPR = (nasA.NPR & nasB.NPR);
-   nasA.NCOL = (nasA.NCOL & nasB.NCOL);
-   nasA.DSMIN = (nasA.DSMIN & nasB.DSMIN);
-   nasA.DSMAX = (nasA.DSMAX & nasB.DSMAX);
-   nasA.DS = (nasA.DS & nasB.DS);
-   nasA.PARMAX = (nasA.PARMAX & nasB.PARMAX);
-   nasA.NORMMIN = (nasA.NORMMIN & nasB.NORMMIN);
-   nasA.NORMMAX = (nasA.NORMMAX & nasB.NORMMAX);
-   nasA.EPSL = (nasA.EPSL & nasB.EPSL);
-   nasA.EPSU = (nasA.EPSU & nasB.EPSU);
-   nasA.EPSS = (nasA.EPSS & nasB.EPSS);
-   nasA.RUNNOW = (nasA.RUNNOW & nasB.RUNNOW);
-   nasA.SEC = (nasA.SEC & nasB.SEC);
-   nasA.UEC = (nasA.UEC & nasB.UEC);
-   nasA.SPC = (nasA.SPC & nasB.SPC);
-   nasA.UPC = (nasA.UPC & nasB.UPC);
-   nasA.AUTOEVAL = (nasA.AUTOEVAL & nasB.AUTOEVAL);
-   nasA.AUTOXMAX = (nasA.AUTOXMAX & nasB.AUTOXMAX);
-   nasA.AUTOYMAX = (nasA.AUTOYMAX & nasB.AUTOYMAX);
-   nasA.AUTOXMIN = (nasA.AUTOXMIN & nasB.AUTOXMIN);
-   nasA.AUTOYMIN = (nasA.AUTOYMIN & nasB.AUTOYMIN);
-   nasA.AUTOVAR = (nasA.AUTOVAR & nasB.AUTOVAR);
-   nasA.PS_FONT = (nasA.PS_FONT & nasB.PS_FONT);
-   nasA.PS_LW = (nasA.PS_LW  & nasB.PS_LW );   
-   nasA.PS_FSIZE = (nasA.PS_FSIZE & nasB.PS_FSIZE);
-   nasA.PS_COLOR = (nasA.PS_COLOR & nasB.PS_COLOR);
-   nasA.FOREVER = (nasA.FOREVER & nasB.FOREVER); 
-   nasA.BVP_TOL = (nasA.BVP_TOL & nasB.BVP_TOL); 
-   nasA.BVP_EPS = (nasA.BVP_EPS & nasB.BVP_EPS); 
-   nasA.BVP_MAXIT = (nasA.BVP_MAXIT & nasB.BVP_MAXIT);
-   nasA.BVP_FLAG = (nasA.BVP_FLAG & nasB.BVP_FLAG);
-   nasA.SOS = (nasA.SOS & nasB.SOS);
-   nasA.FFT = (nasA.FFT & nasB.FFT);
-   nasA.HIST = (nasA.HIST & nasB.HIST);
-   nasA.PltFmtFlag = (nasA.PltFmtFlag & nasB.PltFmtFlag);
-   nasA.ATOLER = (nasA.ATOLER & nasB.ATOLER);
-   nasA.MaxEulIter = (nasA.MaxEulIter & nasB.MaxEulIter);
-   nasA.EulTol    = (nasA.EulTol    & nasB.EulTol);
-   nasA.EVEC_ITER = (nasA.EVEC_ITER & nasB.EVEC_ITER);
-   nasA.EVEC_ERR  = (nasA.EVEC_ERR  & nasB.EVEC_ERR);
-   nasA.NULL_ERR  = (nasA.NULL_ERR  & nasB.NULL_ERR);
-   nasA.NEWT_ERR  = (nasA.NEWT_ERR  & nasB.NEWT_ERR);
-   nasA.NULL_HERE = (nasA.NULL_HERE & nasB.NULL_HERE);
-}
-
-   
 
 void dump_torus(FILE* fp, int f) {
   int i;
@@ -1037,20 +917,6 @@ void split_apart(char* bob, char* name, char* value) {
     }
 
 }
-
-void stor_internopts(char* s1) {
-  int n=strlen(s1);
-  if(Nopts>MAXOPT){
-   plintf("WARNING -- to many options set %s ignored\n",s1);
-    return;
-  }
-  interopt[Nopts]=(char *)malloc(n+1);
-  sprintf(interopt[Nopts],"%s",s1);
-  Nopts++;
-
-}
-  
-
 
 void set_option(char* s1, char* s2, int force, OptionsSet* mask) {
   int i,j,f;

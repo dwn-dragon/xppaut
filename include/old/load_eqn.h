@@ -188,10 +188,28 @@ typedef struct {
 
   } OptionsSet;
 
+/**
+ * @brief Reads the user's `.xpprc` file inside the account's home. The results are loaded in the internal options.
+ */
+void read_xpprc();
+
+/**
+ * @brief Loads the default look.
+ */
+void set_X_vals();
+
+
+/**
+ * @brief 
+ * @param String
+ */
+void stor_internopts(char* String);
+
+void set_internopts(OptionsSet *mask);
+void set_internopts_xpprc_and_comline(void);
 
 void dump_torus(FILE *fp, int f);
 void load_eqn(void);
-void set_X_vals(void);
 void set_all_vals(void);
 void read_defaults(FILE *fp);
 void fil_flt(FILE *fpt, double *val);
@@ -201,13 +219,7 @@ void extract_action(char *ptr);
 void extract_internset(int j);
 void do_intern_set(char *name1, char *value);
 int msc(char *s1, char *s2);
-void set_internopts(OptionsSet *mask);
-void set_internopts_xpprc_and_comline(void);
 void split_apart(char *bob, char *name, char *value);
-void check_for_xpprc(void);
-void stor_internopts(char *s1);
 void set_option(char *s1, char *s2,int force,OptionsSet *mask);
-
-
 
 #endif

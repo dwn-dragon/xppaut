@@ -94,7 +94,6 @@ extern int UserMinHeight;
 /*extern char UserOUTFILE[256];
 */
 extern char UserOUTFILE[XPP_MAX_NAME];
-extern int tfBell;
 extern int use_intern_sets;
 extern int use_ani_file;
 /*extern char anifile[256];
@@ -266,15 +265,15 @@ void do_comline(int argc, char* argv[]) {
 	int i,k;
 
 	silent = 0;
-	got_file=0;
-	xorfix=1;
+	got_file = 0;
+	xorfix = 1;
 
 	setfilename[0]=0;
 	parfilename[0]=0;
 	icfilename[0]=0;
 
-	for(i=1;i<argc;i++) {
-		k=parse_it(argv[i]);
+	for(i=1; i < argc; i++) {
+		k = parse_it(argv[i]);
 		if(k==1){
 			strcpy(setfilename,argv[i+1]);
 			i++;
@@ -432,8 +431,6 @@ void do_comline(int argc, char* argv[]) {
 			i++;
 			externaloptionsflag=2;
 		}
-		
-	
 	}
 }
 

@@ -9,8 +9,7 @@ list(FILTER SOURCES EXCLUDE REGEX "\\.dis$")
 add_executable(xppaut ${SOURCES})
 
 target_include_directories(xppaut 
-	PRIVATE include/
-	PRIVATE ${X11_INCLUDE_DIRS}
+	PRIVATE include/ include/old ${X11_INCLUDE_DIRS}
 )
 target_link_libraries(xppaut
 	PRIVATE ${X11_LIBRARIES}

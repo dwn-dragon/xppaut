@@ -5,11 +5,6 @@
 
 #include <X11/Xlib.h>
 
-/// @brief Parses the arguments with priority (QUITE and LOGFILE).
-/// @param argc 
-/// @param argv 
-void args_priority(int argc, char **argv);
-
 void do_vis_env(void);
 void init_X(void);
 void set_big_font(void);
@@ -33,6 +28,10 @@ void FixWindowSize(Window w, int width, int height, int flag);
 int getxcolors(XWindowAttributes *win_info, XColor **colors);
 void test_color_info(void);
 
+/// @brief Parses the arguments with priority (QUITE and LOGFILE).
+/// @param argc 
+/// @param argv 
+void args_priority(int argc, char **argv);
 
 #endif
  
