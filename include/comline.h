@@ -3,9 +3,9 @@
 
 
 typedef struct {
-  char *name;
-  char *does;
-  unsigned int use;
+	char *name;
+	char *does;
+	unsigned int use;
 } INTERN_SET;
 
 

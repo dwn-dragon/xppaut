@@ -5,7 +5,11 @@
 
 #include <X11/Xlib.h>
 
-void check_for_quiet(int argc, char **argv);
+/// @brief Parses the arguments with priority (QUITE and LOGFILE).
+/// @param argc 
+/// @param argv 
+void args_priority(int argc, char **argv);
+
 void do_vis_env(void);
 void init_X(void);
 void set_big_font(void);

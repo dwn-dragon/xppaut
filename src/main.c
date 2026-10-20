@@ -368,16 +368,12 @@ int main(int argc, char* argv[]) {
 	SCALEY=480;
 	Xup=0;
   
-
-	/*Read visualization environement variables here
-	since some may be overridden by command line
-	*/
+	//	file used by the logger
 	logfile=stdout;
-	check_for_quiet(argc, argv);
+
+	args_priority(argc, argv);
   
 	do_comline(argc, argv);
-
-  
 
 	/*We need to init_X here if there is no file on command line
 	so that a file browser can be opened.
@@ -515,45 +511,31 @@ int main(int argc, char* argv[]) {
 	exit(0);
 } 
 
-void check_for_quiet(argc,argv)
-char **argv;
-int argc;
-{
-	/*First scan, check for any QUIET option set...*/
-	int i = 0;
-	/*Allow for multiple calls to the QUIET and LOGFILE options 
-	on the command line. The last setting is the one that will stick.
-	Settings of logfile and quiet in the xpprc file will be ignored
-	if they are set on the command line.
-	*/ 
-	int quiet_specified_once=0;
-	int logfile_specified_once=0;
+void args_priority(int argc, char* argv[]) {
+	//	allows for multiple calls of the QUIET and LOGFILE but only applies the last one
 	
-	for(i=1;i<argc;i++)
-	{
- 	       if (strcmp(argv[i],"-quiet")==0)
-	       {
-	       	       set_option("QUIET",argv[i+1],1,NULL);
-		       quiet_specified_once=1;
-     		       i++;
-	       }
-	       else if (strcmp(argv[i],"-logfile")==0)
-	       {
-		       set_option("LOGFILE",argv[i+1],1,NULL);
-		       logfile_specified_once = 1;
-     		       i++;
-	       }
+	int qi = 0, li = 0, i = 1;
+	while (i < argc) {
+		if (strcmp(argv[i], "-quiet") == 0) {
+			//	saves the next index and skips it
+			qi = ++i;
+		}
+		else if (strcmp(argv[i], "-logfile") == 0) {
+			//	saves the next index and skips it
+			li = ++i;
+		}
+
+		++i;
 	}
-	/*If -quiet or -logfile were specified at least once on the command line
-	we lock those in now...
-	*/
-	if (quiet_specified_once == 1)
-	{
-		OVERRIDE_QUIET=1;
+
+	//	sets the options only once
+	if (qi > 0) {
+		OVERRIDE_QUIET = 1;
+		set_option("QUIET", argv[qi], 1, NULL);
 	}
-	if (logfile_specified_once == 1)
-	{
-		OVERRIDE_LOGFILE=1;
+	if (li > 0) {
+		OVERRIDE_LOGFILE = 1;
+		set_option("LOGFILE", argv[li], 1, NULL);
 	}
 }
 

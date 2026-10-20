@@ -262,184 +262,179 @@ char *nam;
 }
 
 
-void do_comline(argc,argv)
-char **argv;
-int argc;
-{ 
- int i,k;
+void do_comline(int argc, char* argv[]) { 
+	int i,k;
 
- silent = 0;
- got_file=0;
- xorfix=1;
- /*PaperWhite=0;
- */
- setfilename[0]=0;
- parfilename[0]=0;
- icfilename[0]=0;
- /*includefilename[0]=0;
- */
- for(i=1;i<argc;i++){
-   k=parse_it(argv[i]);
-   if(k==1){
-     strcpy(setfilename,argv[i+1]);
-     i++;
-     loadsetfile=1;
-     
-   }
-   if(k==2){
-     if (notAlreadySet.SMALL_FONT_NAME){strcpy(small_font_name,argv[i+1]);notAlreadySet.SMALL_FONT_NAME=0;};
-     i++;
-   }
-   if(k==3){
-     if (notAlreadySet.BIG_FONT_NAME){strcpy(big_font_name,argv[i+1]);notAlreadySet.BIG_FONT_NAME=0;};
-     i++;
-   } 
-   if(k==4){
-     strcat(parfilename,"!load ");
-     strcat(parfilename,argv[i+1]);
-     i++;
-     loadparfile=1;
-   }
-   if(k==5){
-    plintf(argv[i+1]);
-     sprintf(batchout,argv[i+1]);
-     sprintf(UserOUTFILE,argv[i+1]);
-     i++;
-   }
-   if(k==6){
-     strcat(icfilename,argv[i+1]);
-     i++;
-     loadicfile=1;
-   }
-   if(k==7){
-     if (strlen(argv[i+1]) != 6)
-     {
-       plintf("Color must be given as hexadecimal string.\n");
-	exit(-1);
-     }
-     set_option("FORECOLOR",argv[i+1],1,NULL);
-     i++;
-     
-   }
-   if(k==8){
-     if (strlen(argv[i+1]) != 6)
-     {
-       plintf("Color must be given as hexadecimal string.\n");
-	exit(-1);
-     }
-     set_option("BACKCOLOR",argv[i+1],1,NULL);
-     i++;
-   }
-   if(k==9){
-     /*strcpy(UserBGBitmap,argv[i+1]);
-     */
-     set_option("BACKIMAGE",argv[i+1],1,NULL);
-     i++;
-   }
-   if(k==10){
-     set_option("GRADS",argv[i+1],1,NULL);
-     i++;
-   }
-   if(k==11){
-     set_option("WIDTH",argv[i+1],1,NULL);
-     i++;
-   }if(k==12){
-     set_option("HEIGHT",argv[i+1],1,NULL);
-     i++;
-   }if(k==13){
-     if (strlen(argv[i+1]) != 6)
-     {
-       plintf("Color must be given as hexadecimal string.\n");
-	exit(-1);
-     }
-     set_option("MWCOLOR",argv[i+1],1,NULL);
-     i++;
-   }if(k==14){
-     if (strlen(argv[i+1]) != 6)
-     {
-       plintf("Color must be given as hexadecimal string.\n");
-	exit(-1);
-     }
-     set_option("DWCOLOR",argv[i+1],1,NULL);
-     i++;
-   }
-   if(k==15){
-     set_option("BELL",argv[i+1],1,NULL);
-     i++;
-   }
-   if(k==16){
-     use_intern_sets=atoi(argv[i+1]);
-     select_intern_sets=1;
-     i++;
-   }  
-   if(k==17){
-     sets2use=add_set(sets2use,argv[i+1]);
-     i++;
-     select_intern_sets=1;
-   }
-   if(k==18){
-     setsNOTuse=add_set(setsNOTuse,argv[i+1]);
-     i++;
-     select_intern_sets=1;
-   } 
-   if(k==19){
-     if (NincludedFiles>MaxIncludeFiles)
-     {
-         printf("Max number of include files exceeded.\n");
-     }
-     strcpy(includefilename[NincludedFiles],argv[i+1]);
-     NincludedFiles++;
-     i++;
-     loadincludefile=1;
-   } 
-   if(k==20){
-     set_option("QUIET",argv[i+1],1,NULL);
-     i++;
-   }
-   if(k==21){
-     set_option("LOGFILE",argv[i+1],1,NULL);
-     i++;
-   }
-   if(k==22){
-     strcpy(anifile,argv[i+1]);
-     use_ani_file=1;
-     i++;
-   }
-   if(k==23){
-     printf("XPPAUT Version %g.%g\nCopyright 2015 Bard Ermentrout\n",(float)MYSTR1,(float)MYSTR2);
-     exit(0);
-   }
-   if(k==24){
-     set_option("PLOTFMT",argv[i+1],1,NULL);
-     i++;
-   }
-   if(k==25){
-     SuppressOut=1;
-     
-   }
-   if(k==26){
-     set_option("DFDRAW",argv[i+1],1,NULL);
-     i++;
-   } 
-   if(k==27){
-    
-     set_option("NCDRAW",argv[i+1],1,NULL);
-     i++;
-   }
-   if(k==28){
-     strcpy(readsetfile,argv[i+1]);
-     i++;
-     externaloptionsflag=1;
+	silent = 0;
+	got_file=0;
+	xorfix=1;
 
-   }
-   if(k==29){
-     strcpy(externaloptionsstring,argv[i+1]);
-     i++;
-     externaloptionsflag=2;
-   }
-	 
-  
- }
+	setfilename[0]=0;
+	parfilename[0]=0;
+	icfilename[0]=0;
+
+	for(i=1;i<argc;i++) {
+		k=parse_it(argv[i]);
+		if(k==1){
+			strcpy(setfilename,argv[i+1]);
+			i++;
+			loadsetfile=1;
+			
+		}
+		if(k==2){
+			if (notAlreadySet.SMALL_FONT_NAME){strcpy(small_font_name,argv[i+1]);notAlreadySet.SMALL_FONT_NAME=0;};
+			i++;
+		}
+		if(k==3){
+			if (notAlreadySet.BIG_FONT_NAME){strcpy(big_font_name,argv[i+1]);notAlreadySet.BIG_FONT_NAME=0;};
+			i++;
+		} 
+		if(k==4){
+			strcat(parfilename,"!load ");
+			strcat(parfilename,argv[i+1]);
+			i++;
+			loadparfile=1;
+		}
+		if(k==5){
+			plintf(argv[i+1]);
+			sprintf(batchout,argv[i+1]);
+			sprintf(UserOUTFILE,argv[i+1]);
+			i++;
+		}
+		if(k==6){
+			strcat(icfilename,argv[i+1]);
+			i++;
+			loadicfile=1;
+		}
+		if(k==7){
+			if (strlen(argv[i+1]) != 6)
+			{
+			plintf("Color must be given as hexadecimal string.\n");
+			exit(-1);
+			}
+			set_option("FORECOLOR",argv[i+1],1,NULL);
+			i++;
+			
+		}
+		if(k==8){
+			if (strlen(argv[i+1]) != 6)
+			{
+			plintf("Color must be given as hexadecimal string.\n");
+			exit(-1);
+			}
+			set_option("BACKCOLOR",argv[i+1],1,NULL);
+			i++;
+		}
+		if(k==9){
+			/*strcpy(UserBGBitmap,argv[i+1]);
+			*/
+			set_option("BACKIMAGE",argv[i+1],1,NULL);
+			i++;
+		}
+		if(k==10){
+			set_option("GRADS",argv[i+1],1,NULL);
+			i++;
+		}
+		if(k==11){
+			set_option("WIDTH",argv[i+1],1,NULL);
+			i++;
+		}if(k==12){
+			set_option("HEIGHT",argv[i+1],1,NULL);
+			i++;
+		}if(k==13){
+			if (strlen(argv[i+1]) != 6)
+			{
+			plintf("Color must be given as hexadecimal string.\n");
+			exit(-1);
+			}
+			set_option("MWCOLOR",argv[i+1],1,NULL);
+			i++;
+		}if(k==14){
+			if (strlen(argv[i+1]) != 6)
+			{
+			plintf("Color must be given as hexadecimal string.\n");
+			exit(-1);
+			}
+			set_option("DWCOLOR",argv[i+1],1,NULL);
+			i++;
+		}
+		if(k==15){
+			set_option("BELL",argv[i+1],1,NULL);
+			i++;
+		}
+		if(k==16){
+			use_intern_sets=atoi(argv[i+1]);
+			select_intern_sets=1;
+			i++;
+		}  
+		if(k==17){
+			sets2use=add_set(sets2use,argv[i+1]);
+			i++;
+			select_intern_sets=1;
+		}
+		if(k==18){
+			setsNOTuse=add_set(setsNOTuse,argv[i+1]);
+			i++;
+			select_intern_sets=1;
+		} 
+		if(k==19){
+			if (NincludedFiles>MaxIncludeFiles)
+			{
+				printf("Max number of include files exceeded.\n");
+			}
+			strcpy(includefilename[NincludedFiles],argv[i+1]);
+			NincludedFiles++;
+			i++;
+			loadincludefile=1;
+		} 
+		if(k==20){
+			set_option("QUIET",argv[i+1],1,NULL);
+			i++;
+		}
+		if(k==21){
+			set_option("LOGFILE",argv[i+1],1,NULL);
+			i++;
+		}
+		if(k==22){
+			strcpy(anifile,argv[i+1]);
+			use_ani_file=1;
+			i++;
+		}
+		if(k==23){
+			printf("XPPAUT Version %g.%g\nCopyright 2015 Bard Ermentrout\n",(float)MYSTR1,(float)MYSTR2);
+			exit(0);
+		}
+		if(k==24){
+			set_option("PLOTFMT",argv[i+1],1,NULL);
+			i++;
+		}
+		if(k==25){
+			SuppressOut=1;
+			
+		}
+		if(k==26){
+			set_option("DFDRAW",argv[i+1],1,NULL);
+			i++;
+		} 
+		if(k==27){
+			
+			set_option("NCDRAW",argv[i+1],1,NULL);
+			i++;
+		}
+		if(k==28){
+			strcpy(readsetfile,argv[i+1]);
+			i++;
+			externaloptionsflag=1;
+
+		}
+		if(k==29){
+			strcpy(externaloptionsstring,argv[i+1]);
+			i++;
+			externaloptionsflag=2;
+		}
+		
+	
+	}
 }
 
 
