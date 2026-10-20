@@ -49,9 +49,6 @@ extern int DCURY,DCURX,CURY_OFF,xor_flag;
 extern GC gc;
 extern unsigned int MyBackColor,MyForeColor;
 
-char *get_next(),*get_first();
-
-
 extern char uvar_names[MAXODE][12];
 extern char *ode_names[MAXODE];
 extern int METHOD,NEQ,NODE,NMarkov,FIX_VAR;

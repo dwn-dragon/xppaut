@@ -20,6 +20,9 @@
 
 #include "phsplan.h"
 
+
+#include "utils/tokens.h"
+
 /*  this is also X free ! */
  
 #define GEAR 5
@@ -38,10 +41,6 @@ double atof();
 extern double DELAY;
 extern int DelayFlag;
 FITINFO fin;
-
-char *get_first();
-char *get_next();
-
 
 int (*solver)();
 
@@ -763,13 +762,13 @@ void parse_collist(collist,icols,n)
   char *item;
   int v,i=0;
  
-  item=get_first(collist," ,");
+  item=tok_get_first(collist," ,");
 
   if(item[0]==0)return;
   v=atoi(item);
   icols[i]=v;
   i++;
-  while((item=get_next(" ,"))!=NULL)
+  while((item=tok_get_next(" ,"))!=NULL)
     {
 
       v=atoi(item);
@@ -786,13 +785,13 @@ void parse_varlist(varlist,ivars,n)
   char *item;
   int v,i=0;
   
-  item=get_first(varlist," ,");
+  item=tok_get_first(varlist," ,");
   if(item[0]==0)return;
   find_variable(item,&v);
   if(v<=0)return;
   ivars[i]=v-1;
   i++;
-  while((item=get_next(" ,"))!=NULL)
+  while((item=tok_get_next(" ,"))!=NULL)
     { 
       find_variable(item,&v);
       if(v<=0)return;
@@ -816,7 +815,7 @@ void parse_parlist(parlist,ipars,n)
   }
   if(j==strlen(parlist))return;
   if(strlen(parlist)==0)return;
-  item=get_first(parlist," ,");
+  item=tok_get_first(parlist," ,");
   if(item[0]==0L)return;
  
   find_variable(item,&v);
@@ -830,7 +829,7 @@ void parse_parlist(parlist,ipars,n)
     ipars[i+*n]=-v;
     i++;
   }
-  while((item=get_next(" ,"))!=NULL)
+  while((item=tok_get_next(" ,"))!=NULL)
     { 
  
       find_variable(item,&v);

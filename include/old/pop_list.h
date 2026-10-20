@@ -56,7 +56,6 @@ extern GC gc,small_gc;
 extern unsigned int MyBackColor,MyForeColor;
 
 extern int TipsFlag;
-char *get_next(),*get_first();
 extern char UserBlack[8];
 extern char UserWhite[8];
 extern int UserGradients;

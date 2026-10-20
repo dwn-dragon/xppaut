@@ -2,9 +2,10 @@
 #ifndef _form_ode_h
 #define _form_ode_h
 
+#include <stdio.h>
+
 #include "xpplim.h"
 #include "newpars.h"
-#include <stdio.h>
 
 #define MAXVNAM 33
 #define MAXLINES 5000
@@ -45,8 +46,6 @@ void list_upar(void);
 void welcome(void);
 void show_syms(void);
 void take_apart(char *bob, double *value, char *name);
-char *get_first(char *string, char *src);
-char *get_next(char *src);
 void find_ker(char *string, int *alt);
 void pos_prn(char *s, int x, int y);
 void clrscr(void);
@@ -73,11 +72,11 @@ int find_char(char *s1, char *s2, int i0, int *i1);
 int next_nonspace(char *s1, int i0, int *i1);
 void remove_blanks(char *s1);
 void read_a_line(FILE *fp, char *s);
-int search_array(char *old, char *new, int *i1, int *i2, int *flag);
+int search_array(char *old, char *n, int *i1, int *i2, int *flag);
 int check_if_ic(char *big);
 int not_ker(char *s, int i);
 int is_comment(char *s);
-void subsk(char *big, char *new, int k, int flag);
+void subsk(char *big, char *n, int k, int flag);
 void keep_orig_comments(void);
 void default_comments(void);
 void free_comments(void);

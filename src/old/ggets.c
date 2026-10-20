@@ -181,7 +181,7 @@ char *string;
  
 }
 
-int plintf(char *fmt,...)
+int plintf(const char *fmt, ...)
 {
 	int nchar=0;
 	va_list arglist;

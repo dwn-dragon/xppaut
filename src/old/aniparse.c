@@ -21,6 +21,9 @@
 #include <stdlib.h> 
 #include <string.h>
 #include <libgen.h>
+
+#include "utils/tokens.h"
+
 /*  A simple animator
    
 */
@@ -217,12 +220,6 @@ GC ani_gc;
 
 extern int use_ani_file;
 extern char anifile[256]; 
-
-
-
-char *get_first(/* char *string,char *src */);
-char *get_next(/* char *src */);
-
 
 /* Colors 
   no color given is default black on white background or white on black
@@ -1268,7 +1265,7 @@ int parse_ani_string(s,fp)
  thick[0]=0;
  ptr=s;
  type=COMNT;
- command=get_first(ptr,"; ");
+ command=tok_get_first(ptr,"; ");
  if (command == NULL)
  {
  	return -1;
@@ -1319,35 +1316,35 @@ int parse_ani_string(s,fp)
    type=AYNULL;
  switch(type){
  case GRAB:
-   nxt=get_next(";");
+   nxt=tok_get_next(";");
    if(nxt==NULL)return -1;
     strcpy(x1,nxt);
-    nxt=get_next(";");
+    nxt=tok_get_next(";");
     if(nxt==NULL)return -1;
     strcpy(x2,nxt);
-    nxt=get_next(";");
+    nxt=tok_get_next(";");
     if(nxt==NULL)return -1;
     strcpy(x3,nxt);
     anss=add_grab_command(x1,x2,x3,fp);
     return(anss);
  case AXNULL:
  case AYNULL:
-    nxt=get_next(";");
+    nxt=tok_get_next(";");
     if(nxt==NULL)return -1;
     strcpy(x1,nxt);
-    nxt=get_next(";");
+    nxt=tok_get_next(";");
     if(nxt==NULL)return -1;
     strcpy(x2,nxt);
-    nxt=get_next(";");
+    nxt=tok_get_next(";");
     if(nxt==NULL)return -1;
     strcpy(x3,nxt);
-    nxt=get_next(";\n");
+    nxt=tok_get_next(";\n");
     if(nxt==NULL)return -1;
     strcpy(x4,nxt);
-    nxt=get_next(";\n");
+    nxt=tok_get_next(";\n");
    if(nxt==NULL)return -1;
    strcpy(col,nxt);
-   nxt=get_next("\n");
+   nxt=tok_get_next("\n");
    if(nxt==NULL)return -1;
    strcpy(thick,nxt);
    break;   
@@ -1356,125 +1353,125 @@ int parse_ani_string(s,fp)
  case ELLIP:
  case FELLIP:
  case FRECT:
-   nxt=get_next(";");
+   nxt=tok_get_next(";");
    if(nxt==NULL)return -1;
   strcpy(x1,nxt);
-   nxt=get_next(";");
+   nxt=tok_get_next(";");
   if(nxt==NULL)return -1;
    strcpy(x2,nxt);
-   nxt=get_next(";");
+   nxt=tok_get_next(";");
   if(nxt==NULL)return -1;
    strcpy(x3,nxt);
-   nxt=get_next(";\n");
+   nxt=tok_get_next(";\n");
   if(nxt==NULL)return -1;
    strcpy(x4,nxt);
-   nxt=get_next(";\n");
+   nxt=tok_get_next(";\n");
    if((nxt==NULL)||strlen(nxt)==0)break;
    strcpy(col,nxt);
-   nxt=get_next("\n");
+   nxt=tok_get_next("\n");
    if((nxt==NULL)||strlen(nxt)==0)break;
    strcpy(thick,nxt);
    break;   
  case RLINE:
-   nxt=get_next(";");
+   nxt=tok_get_next(";");
   if(nxt==NULL)return -1;
    strcpy(x1,nxt);
-   nxt=get_next(";");
+   nxt=tok_get_next(";");
   if(nxt==NULL)return -1;
    strcpy(x2,nxt);
-   nxt=get_next(";\n");
+   nxt=tok_get_next(";\n");
   if((nxt==NULL)||strlen(nxt)==0)break;
    strcpy(col,nxt);
-   nxt=get_next("\n");
+   nxt=tok_get_next("\n");
   if((nxt==NULL)||strlen(nxt)==0)break;
    strcpy(thick,nxt);
    break;  
  case COMET:
-   nxt=get_next(";");
+   nxt=tok_get_next(";");
    if(nxt==NULL)return -1;
   strcpy(x1,nxt);
-   nxt=get_next(";");
+   nxt=tok_get_next(";");
   if(nxt==NULL)return -1;
    strcpy(x2,nxt);
-   nxt=get_next(";");
+   nxt=tok_get_next(";");
   if(nxt==NULL)return -1;
    strcpy(thick,nxt);
-   nxt=get_next(";\n");
+   nxt=tok_get_next(";\n");
   if(nxt==NULL)return -1;
    strcpy(x3,nxt);
-   nxt=get_next(";\n");
+   nxt=tok_get_next(";\n");
    if((nxt==NULL)||strlen(nxt)==0)break;
    strcpy(col,nxt);
    break;
  case CIRC:
  case FCIRC:
-   nxt=get_next(";");
+   nxt=tok_get_next(";");
   if(nxt==NULL)return -1;
    strcpy(x1,nxt);
-   nxt=get_next(";");
+   nxt=tok_get_next(";");
   if(nxt==NULL)return -1;
    strcpy(x2,nxt);
-   nxt=get_next(";");
+   nxt=tok_get_next(";");
   if(nxt==NULL)return -1;
    strcpy(x3,nxt);
-   nxt=get_next(";\n");
+   nxt=tok_get_next(";\n");
    if((nxt==NULL)||strlen(nxt)==0)break;
    strcpy(col,nxt);
    break;
  case SETTEXT:
-   nxt=get_next(";");
+   nxt=tok_get_next(";");
   if(nxt==NULL)return -1;
    strcpy(x1,nxt);
-   nxt=get_next(";");
+   nxt=tok_get_next(";");
   if(nxt==NULL)return -1;
    strcpy(x2,nxt);
-   nxt=get_next(";");
+   nxt=tok_get_next(";");
   if(nxt==NULL)return -1;
    strcpy(col,nxt);
    break;
  case TEXT:
-    nxt=get_next(";");
+    nxt=tok_get_next(";");
   if(nxt==NULL)return -1;
    strcpy(x1,nxt);
-   nxt=get_next(";");
+   nxt=tok_get_next(";");
   if(nxt==NULL)return -1;
    strcpy(x2,nxt);
-   nxt=get_next(";");
+   nxt=tok_get_next(";");
   if(nxt==NULL)return -1;
    strcpy(x4,nxt);
    break;
  case VTEXT:
-   nxt=get_next(";");
+   nxt=tok_get_next(";");
   if(nxt==NULL)return -1;
    strcpy(x1,nxt);
-   nxt=get_next(";");
+   nxt=tok_get_next(";");
   if(nxt==NULL)return -1;
    strcpy(x2,nxt);
-   nxt=get_next(";");
+   nxt=tok_get_next(";");
   if(nxt==NULL)return -1;
    strcpy(x4,nxt);
-   nxt=get_next(";\n");
+   nxt=tok_get_next(";\n");
    if(nxt==NULL)return -1;
    strcpy(x3,nxt);
    break;
  case SPEED:
-   nxt=get_next(" \n");
+   nxt=tok_get_next(" \n");
    if(nxt==NULL)return -1;
    ani_speed=atoi(nxt);
    if(ani_speed<0)ani_speed=0;
    if(ani_speed>1000)ani_speed=1000;
    return 1;
  case DIMENSION:
-   nxt=get_next(";");
+   nxt=tok_get_next(";");
   if(nxt==NULL)return -1;
    strcpy(x1,nxt);
-   nxt=get_next(";");
+   nxt=tok_get_next(";");
   if(nxt==NULL)return -1;
    strcpy(x2,nxt);
-   nxt=get_next(";");
+   nxt=tok_get_next(";");
   if(nxt==NULL)return -1;
    strcpy(x3,nxt);
-   nxt=get_next(";\n");
+   nxt=tok_get_next(";\n");
   if(nxt==NULL)return -1;
    strcpy(x4,nxt);
    break;

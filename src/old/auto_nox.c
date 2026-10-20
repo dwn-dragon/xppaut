@@ -52,6 +52,8 @@
 #include "autlim.h"
 #include "xAuto.h" 
 
+#include "utils/tokens.h"
+
 #define MAXLINELENGTH 100000
 #define PACK_AUTO 0
 #define PACK_LBF 1
@@ -197,9 +199,6 @@ double atof();
 double outperiod[20];
 integer UzrPar[20];
 int NAutoUzr;
-
-char *get_first();
-char *get_next();
 
 /*extern char this_file[100];*/
 extern char this_file[XPP_MAX_NAME];
@@ -714,11 +713,11 @@ void auto_per_par()
     status=do_string_box(9,5,2,"AutoPer",n,values,45);
     if(status!=0)
       for(i=0;i<9;i++){
-	ptr=get_first(values[i],"=");
+	ptr=tok_get_first(values[i],"=");
 	in=auto_name_to_index(ptr);
 	if(in>=0){
 	  Auto.uzrpar[i]=in;
-	  ptr=get_next("@");
+	  ptr=tok_get_next("@");
 	  Auto.period[i]=atof(ptr);
 	}
       }

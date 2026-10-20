@@ -73,7 +73,7 @@
 #include <X11/Xatom.h>
 /* #include <X11/bitmaps/icon> */
 #include <math.h>
-#include "pp.bitmap"
+#include "old/pp.bitmap"
 #include <stdio.h>
 /* #include <errno.h> */
 #include "help_defs.h"
@@ -378,8 +378,7 @@ int main(int argc, char* argv[]) {
 	/*We need to init_X here if there is no file on command line
 	so that a file browser can be opened.
 	*/
-	if(!XPPBatch)
-	{    
+	if(!XPPBatch) {    
 		/*Swap out the current options for a temporary place holder
 		*/
 		OptionsSet *tempNS = (OptionsSet*)malloc(sizeof(OptionsSet));
@@ -512,7 +511,10 @@ int main(int argc, char* argv[]) {
 } 
 
 void do_vis_env() {
+	//	gfx fn
 	set_X_vals();
+
+	//	prepares the xpprc configs
 	read_xpprc();
 	set_internopts_xpprc_and_comline();
 }
