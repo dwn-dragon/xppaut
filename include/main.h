@@ -5,7 +5,6 @@
 
 #include <X11/Xlib.h>
 
-void do_main(int argc, char **argv);
 void check_for_quiet(int argc, char **argv);
 void do_vis_env(void);
 void init_X(void);

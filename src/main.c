@@ -200,12 +200,9 @@ OptionsSet notAlreadySet;
 
 XFontStruct *big_font,*small_font;
 
- int popped=0;
+int popped=0;
 
-void do_main(argc,argv)
-char **argv;
-int argc;
-{
+int main(int argc, char* argv[]) {
 /* Moved to init_X() */
 /*  char *icon_name="xpp"; */
   /*char myfile[256];*/
@@ -558,7 +555,7 @@ default_window();
 
 do_events(min_wid,min_hgt);
 
-
+	exit(0);
 } 
 
 void check_for_quiet(argc,argv)
