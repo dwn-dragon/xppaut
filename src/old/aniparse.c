@@ -1227,8 +1227,6 @@ FILE *fp;
     search_array(old,new,&jj1,&jj2,&flag);
     for(jj=jj1;jj<=jj2;jj++){
       subsk(new,big,jj,flag);
-      /* strupr(big); */
-/*      plintf(" %s \n",big); */
       ans=parse_ani_string(big,fp);
     }
 
