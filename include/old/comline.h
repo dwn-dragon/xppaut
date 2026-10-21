@@ -9,10 +9,12 @@ typedef struct {
 } INTERN_SET;
 
 
-typedef struct {
-   char *name;
-   struct SET_NAME * next;
-} SET_NAME;
+typedef struct SET_NAME SET_NAME;
+
+struct SET_NAME {
+	char *name;
+	SET_NAME * next;
+};
 
 
 

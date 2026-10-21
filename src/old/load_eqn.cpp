@@ -19,9 +19,7 @@ extern "C" {
 #include "arrayplot.h"
 #include "lunch-new.h"
 #include "graphics.h"
-
-/*#include "macdirent.h"
-*/
+#include "markov.h"
 
 #include <dirent.h>
 #include "userbut.h"
@@ -34,7 +32,7 @@ extern "C" {
 #include <stdio.h>
 #include "xpplim.h"
 
-
+#include "utils/str.h"
 #include "utils/tokens.h"
 
 #define PARAM 1
@@ -42,7 +40,6 @@ extern "C" {
 
 
 #define DFNORMAL 1
-#define MAXOPT 1000
 #define READEM 1
 
 extern OptionsSet notAlreadySet;
@@ -57,12 +54,12 @@ typedef struct {
 extern HIST_INFO hist_inf;
 extern int spec_col,spec_wid,spec_win,spec_col2,post_process;
 
+constexpr size_t 
+	_inopt_num = 1024,
+	_inopt_len_max = 256;
 
-
-int nsrand48(int seed);
-
-char* interopt[MAXOPT];
-int Nopts=0;
+size_t Nopts = 0;
+char* interopt[_inopt_num];
 
 int RunImmediately=0;
 extern char dll_lib[256];
@@ -263,9 +260,9 @@ void read_xpprc() {
 		return;
 
 	//	parses the file
-	char buff[256];	
+	char buff[_inopt_len_max];	
 	while (!feof(f)) {
-		fgets(buff, 256 - 1, f);
+		fgets(buff, _inopt_len_max - 1, f);
 		if(buff[0] == '@')
 			stor_internopts(buff);
 	}
@@ -275,13 +272,15 @@ void read_xpprc() {
 
 //	saves `s1` to `interopt`
 void stor_internopts(char* str) {
-	if(Nopts > MAXOPT) {
+	if(Nopts >= _inopt_num) {
 		plintf("WARNING -- to many options set %s ignored\n", str);
 		return;
 	}
 	
 	//	deep copies the string inside the internal buffer
-	auto opt = (char*) malloc(strlen(str) + 1);
+	//	caps the max length of the internal option string to (_inopt_len_max + '\n')
+	auto opt = (char*)malloc(strnlen(str, _inopt_len_max - 1) + 1);
+
 	strcpy(opt, str);
 	interopt[Nopts++] = opt;
 }
@@ -291,6 +290,11 @@ void set_internopts(OptionsSet *mask) {
 	//	does nothing with no internal options saved
 	if (Nopts == 0)
 		return;
+
+	//	if no mask is provided, uses nullptr. copies the mask otherwise
+	OptionsSet* _mask = nullptr;
+	if (mask)
+		_mask = new OptionsSet{ *mask };
 	
 	constexpr size_t _name_len = 20, _value_len = 80;
 	char name[_name_len], value[_value_len];
@@ -307,111 +311,18 @@ void set_internopts(OptionsSet *mask) {
 
 		//	extracts all the options from the string
 		while (auto token = tok_get_next(" ,\n\r")) {
-			split_apart(token, name, value);
-			if (strnlen(name, _name_len) > 0 && strnlen(value, _value_len) > 0)
-				set_option(name, value, 0, mask);
+			//	splits the token and acts only with valid name and value
+			auto [nlen, vlen] = tok_split_apart(token, name, value);
+			if (nlen > 0 && vlen > 0)
+				set_option(name, value, 0, _mask);
 		}
 
 		free(opt);
 	}
 
-	Nopts = 0;  
-}
-
-void set_internopts_xpprc_and_comline() {
-	int i;
-	char *ptr,name[20],value[80],*junk,*mystring;
-
-	if(Nopts==0)
-		return;
-	/*  parsem here   */
-	/*Check for QUIET and LOGFILE options first...*/
-	char intrnoptcpy[255]; /*Must use copy to avoid side effects of strtok used in get_first below*/
-	for(i=0;i<Nopts;i++){
-		strcpy(intrnoptcpy,interopt[i]);
-		ptr=intrnoptcpy;
-		junk=tok_get_first(ptr," ,");  
-		if (junk == NULL)
-		{
-			/*No more tokens.  Should this throw an error?*/
-		}	
-		while((mystring=tok_get_next(" ,\n\r"))!=NULL)
-		{
-		split_apart(mystring,name,value);
-		strupr(name); 
-		
-		if (strlen(name)==5)
-		{
-				strupr(name);
-			if(strcmp(name,"QUIET")==0)
-			{
-			set_option(name,value,0,NULL);
-			}
-		}
-		else if (strlen(name)==7)
-		{	
-			strupr(name);
-			
-			if(strcmp(name,"LOGFILE")==0)
-			{
-					set_option(name,value,0,NULL);
-			}
-		}
-	}
-	}
-	
-	/*We make a BOOLEAN MASK using the current OptionsSet*/
-	/*This allows options to be overwritten multiple times within .xpprc
-	but prevents overwriting across comline, .xpprc etc.
-	*/ 
-	OptionsSet *tempNAS = (OptionsSet*)malloc(sizeof(OptionsSet));
-	*tempNAS = notAlreadySet;
-	
-	for(i=0;i<Nopts;i++){
-		ptr=interopt[i];
-		junk=tok_get_first(ptr," ,");
-		while((mystring=tok_get_next(" ,\n\r"))!=NULL)
-		{
-		split_apart(mystring,name,value);
-		if(strlen(name)>0&&strlen(value)>0)
-		{
-			set_option(name,value,0,tempNAS);
-		}	
-		}
-	}
-	free(tempNAS);
-	
-	/*
-	We leave a fresh start for options specified in the ODE file.
-	*/
-	for(i=0;i<Nopts;i++)
-	{
-		free(interopt[i]);
-	} 
-	
-	Nopts=0;
-}
-
-void split_apart(const char* token, char* name, char* value) {
-	auto l_tot = strlen(token);
-	auto l_name = strcspn(token, "=");
-
-	if(l_tot <= l_name) {
-		//	no value present, only name
-		value = "";
-		strcpy(name, token);
-	}
-	else {
-		//	copies the name and terminates it
-		strncpy(name, token, l_name);
-		name[l_name] = '\0';
-
-		//	copies the name and terminates it
-		//	TODO: Convert to strncpy
-		for(size_t i = l_name + 1; i < l_tot; i++)
-			value[i-l_name-1] = token[i];
-		value[l_tot-l_name-1] = '\0';
-	}
+	Nopts = 0;
+	if (_mask)
+		delete _mask;
 }
 
 void dump_torus(FILE* fp, int f) {
@@ -430,65 +341,61 @@ void dump_torus(FILE* fp, int f) {
 }
 
 
-void load_eqn()
-{
- int no_eqn=1,okay=0;
- int i;
- int std=0;
- FILE *fptr;
-  init_ar_ic();
-  for(i=0;i<MAXODE;i++)
- {
-  itor[i]=0;
-/*  last_ic[i]=0.0; */
-  strcpy(delay_string[i],"0.0");
- }
-/* Moved to main
- do_comline(argc,argv); */
- if(strcmp(this_file,"/dev/stdin")==0)std=1;
- struct dirent *dp;
- if (got_file==1&&(std==0) &&(dp=(struct dirent*)opendir(this_file))!=NULL)
-  {
+void load_eqn() {
+	int no_eqn=1,okay=0;
+	int i;
+	int std=0;
+	FILE *fptr;
+	init_ar_ic();
+	for(i=0;i<MAXODE;i++)
+	{
+		itor[i]=0;
+		/*  last_ic[i]=0.0; */
+		strcpy(delay_string[i],"0.0");
+	}
+	/* Moved to main
+	do_comline(argc,argv); */
+	if(strcmp(this_file,"/dev/stdin")==0)
+		std=1;
+	
+	struct dirent *dp;
+	if (got_file==1&&(std==0) &&(dp=(struct dirent*)opendir(this_file))!=NULL) {
+		no_eqn = 1;
+		okay=0; 	
+		change_directory(this_file);
+		okay=make_eqn();
+		return;	
+	}
+	else if(got_file==1&&(fptr=fopen(this_file,"r"))!=NULL) {
+		if(std==1)
+			sprintf(this_file,"console");
+		okay=get_eqn(fptr);
+		if(std==0)
+			fclose(fptr);
+	
+		if(okay==1)
+			no_eqn=0;
+	}
 
-  	no_eqn = 1;
-	okay=0; 	
-	       change_directory(this_file);
-	       okay=make_eqn();
-	       return;
-	
-  }
-  else
-  {
-  if(got_file==1&&(fptr=fopen(this_file,"r"))!=NULL)
-  {
-    if(std==1)sprintf(this_file,"console");
-   okay=get_eqn(fptr);
-   if(std==0)
-     fclose(fptr);
-  
-   if(okay==1)no_eqn=0;
-  }
- }
- if(no_eqn)
-   {
-     while(okay==0)
-       {
-       	 struct dirent *dp;
-	 char odeclassrm[256];
-	 if (getenv("XPPSTART")!=NULL)
-	 {
-	      
-	 	sprintf(odeclassrm,"%s",getenv("XPPSTART"));
-	
-		if ((dp=(struct dirent*)opendir(odeclassrm))!=NULL)
-		{
-	 	       change_directory(odeclassrm);
-		}
-	 }
-	 
-	 okay=make_eqn();
-       } 
-   }   
+	//	this section opens the file browser to select the ode file
+	if(no_eqn) {
+		while(okay == 0) {
+			struct dirent *dp;
+			char odeclassrm[256];
+
+			if (getenv("XPPSTART")!=NULL) {
+			
+				sprintf(odeclassrm,"%s",getenv("XPPSTART"));
+			
+				if ((dp=(struct dirent*)opendir(odeclassrm))!=NULL)
+				{
+					change_directory(odeclassrm);
+				}
+			}
+		
+			okay = make_eqn();
+		} 
+	}   
 }
 
 void set_all_vals() {
@@ -707,15 +614,6 @@ void fil_int(FILE* fpt, int* val) {
  *val=atoi(bob);
 }
 
-
-
-/* here is some new code for internal set files:
-   format of the file is a long string of the form:
-   { x=y, z=w, q=p , .... }
-*/
-
-
-
 void add_intern_set(char* name, char* does) {
   char bob[256],ch;
   int i,n,j=Nintern_set,k=0;
@@ -767,7 +665,7 @@ void extract_action(char *ptr) {
   }
   
   while((mystring=tok_get_next(" ,;\n"))!=NULL){
-   split_apart(mystring,name,value);
+   tok_split_apart(mystring,name,value);
       if(strlen(name)>0&&strlen(value)>0)
        do_intern_set(name,value);
     } 
@@ -2123,5 +2021,5 @@ if(msc("SLO2",s1)){
 plintf("!! Option %s not recognized\n",s1); 
   
 }
-
+  
 }
