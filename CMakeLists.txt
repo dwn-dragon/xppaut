@@ -16,7 +16,7 @@ add_executable(xppaut
 	${SOURCES}
 
 	src/main.c
-	src/utils/tokens.cpp
+	src/utils/str.cpp src/utils/tokens.cpp
 )
 
 target_include_directories(xppaut 
@@ -34,7 +34,7 @@ target_compile_definitions(xppaut PRIVATE
     AUTO
     CVODE_YES
     HAVEDLL
-    MYSTR1=8.0
+	MYSTR1=8.0
     MYSTR2=0
 )
 
