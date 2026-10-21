@@ -206,12 +206,12 @@ void read_xpprc();
 void stor_internopts(char* String);
 /**
  * @brief Parses the stored internal options and sets them on the mask.
- * @param[in] mask Object to store the options.
+ * @param[in] mask 
  */
-void set_internopts(OptionsSet *mask);
-void set_internopts_xpprc_and_comline(void);
+void set_internopts(OptionsSet* mask);
 
-void split_apart(const char* token, char *name, char *value);
+void set_option(char *s1, char *s2,int force,OptionsSet *mask);
+int msc(char *s1, char *s2);
 
 void dump_torus(FILE *fp, int f);
 void load_eqn(void);
@@ -223,7 +223,5 @@ void add_intern_set(char *name, char *does);
 void extract_action(char *ptr);
 void extract_internset(int j);
 void do_intern_set(char *name1, char *value);
-int msc(char *s1, char *s2);
-void set_option(char *s1, char *s2,int force,OptionsSet *mask);
 
 #endif
