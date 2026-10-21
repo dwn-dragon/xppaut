@@ -38,6 +38,7 @@
 #include "newpars.h"
 
 
+#include "utils/str.h"
 #include "utils/tokens.h"
 
 #define MAXONLY 1000

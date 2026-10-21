@@ -11,6 +11,7 @@
 #include <string.h>
 
 
+#include "utils/str.h"
 #include "utils/tokens.h"
 
 /* 

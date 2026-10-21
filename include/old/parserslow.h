@@ -180,12 +180,6 @@ double dlt(double x, double y);
 double evaluate(int *equat);
 double eval_rpn(int *equat);
 
-/*  STRING STUFF  */
-#ifndef STRUPR
-void strupr(char *s);
-void strlwr(char *s);
-#endif
-
 /*****************************************************/
 
 

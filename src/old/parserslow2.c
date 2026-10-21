@@ -21,6 +21,10 @@
 #include "xpplim.h"
 #include "getvar.h"
 
+
+#include "utils/str.h"
+
+
 #define MAXEXPLEN 1024
 #define THOUS 10000
 #define DOUB_EPS 2.23E-15 
@@ -2201,32 +2205,4 @@ double xx;
 }
 
 
-#endif
-
-
-
-/*  STRING STUFF  */
-#ifndef STRUPR
-void strupr(s)
-char *s;
-{
- int i=0;
- while(s[i])
- {
-  if(islower(s[i]))s[i]-=32;
-  i++;
-  }
-}
-
-
-void strlwr(s)
-char *s;
-{
- int i=0;
- while(s[i])
- {
-  if(isupper(s[i]))s[i]+=32;
-  i++;
-  }
-}
 #endif
